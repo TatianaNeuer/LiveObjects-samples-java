@@ -81,6 +81,7 @@ public class Sample_03_SimpleDeviceHandleCommand {
 
         String SERVER = "tcp://liveobjects.orange-business.com:1883";
         String DEVICE_URN = "urn:lo:nsid:sensor:XX56765";
+        int KEEP_ALIVE_INTERVAL = 30;// Must be <= 50
 
         try {
             MqttClient mqttClient = new MqttClient(SERVER, DEVICE_URN, new MemoryPersistence());
@@ -92,6 +93,7 @@ public class Sample_03_SimpleDeviceHandleCommand {
             connOpts.setUserName("json+device"); // selecting mode "Device"
             connOpts.setPassword(API_KEY.toCharArray()); // passing API key value as password
             connOpts.setCleanSession(true);
+            connOpts.setKeepAliveInterval(KEEP_ALIVE_INTERVAL);
 
             // Connection
             System.out.println("Connecting to broker: " + SERVER);

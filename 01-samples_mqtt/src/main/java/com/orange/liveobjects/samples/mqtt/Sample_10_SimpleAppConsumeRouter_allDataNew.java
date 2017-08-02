@@ -48,6 +48,7 @@ public class Sample_10_SimpleAppConsumeRouter_allDataNew {
 
         String SERVER = "tcp://liveobjects.orange-business.com:1883";
         String APP_ID = "app:" + UUID.randomUUID().toString();
+        int KEEP_ALIVE_INTERVAL = 30;// Must be <= 50
 
         MqttClient mqttClient = null;
         try {
@@ -60,6 +61,7 @@ public class Sample_10_SimpleAppConsumeRouter_allDataNew {
             connOpts.setUserName("json+bridge"); // selecting mode "Bridge"
             connOpts.setPassword(API_KEY.toCharArray()); // passing API key value as password
             connOpts.setCleanSession(true);
+            connOpts.setKeepAliveInterval(KEEP_ALIVE_INTERVAL);
 
             // Connection
             System.out.printf("Connecting to broker: %s ...%n", SERVER);
