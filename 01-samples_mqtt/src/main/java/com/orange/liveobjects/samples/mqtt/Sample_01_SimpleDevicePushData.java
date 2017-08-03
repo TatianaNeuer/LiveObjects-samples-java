@@ -28,6 +28,7 @@ public class Sample_01_SimpleDevicePushData {
 
         String SERVER = "tcp://liveobjects.orange-business.com:1883";
         String DEVICE_URN = "urn:lo:nsid:sensor:XX56765";
+        int KEEP_ALIVE_INTERVAL = 30;// Must be <= 50
 
         // *** data to push ***
         DeviceData data = new DeviceData();
@@ -52,6 +53,7 @@ public class Sample_01_SimpleDevicePushData {
             connOpts.setUserName("json+device"); // selecting mode "Device"
             connOpts.setPassword(API_KEY.toCharArray()); // passing API key value as password
             connOpts.setCleanSession(true);
+            connOpts.setKeepAliveInterval(KEEP_ALIVE_INTERVAL);
 
             // Connection
             System.out.println("Connecting to broker: " + SERVER);
