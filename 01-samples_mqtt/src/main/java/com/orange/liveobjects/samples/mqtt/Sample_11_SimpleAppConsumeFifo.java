@@ -20,11 +20,13 @@ import java.util.UUID;
  */
 public class Sample_11_SimpleAppConsumeFifo {
 
+    final static String TOPIC_FIFO = "fifo/alarm";
+
     /**
      * Basic "MqttCallback" that handles messages as JSON device commands,
      * and immediately respond.
      */
-    public static class SimpleMqttCallback implements MqttCallback {
+    public static class SimpleMqttCallback implements MqttCallbackExtended {
         private MqttClient mqttClient;
 
         public SimpleMqttCallback(MqttClient mqttClient) {
@@ -33,7 +35,6 @@ public class Sample_11_SimpleAppConsumeFifo {
 
         public void connectionLost(Throwable throwable) {
             System.out.println("Connection lost");
-            mqttClient.notifyAll();
         }
 
         public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
@@ -42,6 +43,22 @@ public class Sample_11_SimpleAppConsumeFifo {
 
         public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
             // nothing
+        }
+
+        public void connectComplete(boolean b, String s) {
+            System.out.println("Connection is established");
+            try {
+                subscribeToFifo(mqttClient, TOPIC_FIFO);
+            } catch (MqttException e) {
+                System.out.println("Error during subscription");
+            }
+        }
+
+        private void subscribeToFifo(MqttClient mqttClient, String routingKey) throws MqttException {
+            // Subscribe to commands
+            System.out.printf("Consuming from Router with filter '%s'...%n", routingKey);
+            mqttClient.subscribe(routingKey);
+            System.out.println("... subscribed.");
         }
     }
 
@@ -65,16 +82,12 @@ public class Sample_11_SimpleAppConsumeFifo {
             connOpts.setPassword(API_KEY.toCharArray()); // passing API key value as password
             connOpts.setCleanSession(true);
             connOpts.setKeepAliveInterval(KEEP_ALIVE_INTERVAL);
+            connOpts.setAutomaticReconnect(true);
 
             // Connection
             System.out.printf("Connecting to broker: %s ...%n", SERVER);
             mqttClient.connect(connOpts);
             System.out.println("... connected.");
-
-            // Subscribe to commands
-            System.out.println("Consuming from FIFO queue...");
-            mqttClient.subscribe("fifo/~data");
-            System.out.println("... subscribed.");
 
             synchronized (mqttClient) {
                 mqttClient.wait();
