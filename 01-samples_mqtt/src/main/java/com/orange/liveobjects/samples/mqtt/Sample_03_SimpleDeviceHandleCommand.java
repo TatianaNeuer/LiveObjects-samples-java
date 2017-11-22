@@ -24,8 +24,9 @@ public class Sample_03_SimpleDeviceHandleCommand {
      * Basic "MqttCallback" that handles messages as JSON device commands,
      * and immediately respond.
      */
-    public static class SimpleMqttCallback implements MqttCallback {
+    public static class SimpleMqttCallback implements MqttCallbackExtended {
 
+        private static final String TOPIC_FILTER = "dev/cmd";
         private final MqttClient mqttClient;
         private Gson gson = new Gson();
         private Integer counter = 0;
@@ -73,6 +74,25 @@ public class Sample_03_SimpleDeviceHandleCommand {
         public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
             System.out.println("Message delivered");
         }
+
+        @Override
+        public void connectComplete(boolean b, String s) {
+            System.out.println("Connection is established");
+            try {
+                subscribeToTopic(mqttClient, TOPIC_FILTER);
+            } catch (MqttException e) {
+                System.out.println("Error during subscription");
+                System.out.println(e.toString());
+            }
+        }
+
+        private void subscribeToTopic(MqttClient mqttClient, String topicFilter) throws MqttException {
+            // Subscribe to commands
+            System.out.println("Awaiting for commands...");
+            mqttClient.subscribe(topicFilter);
+            System.out.println("Subscribed");
+
+        }
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -94,16 +114,12 @@ public class Sample_03_SimpleDeviceHandleCommand {
             connOpts.setPassword(API_KEY.toCharArray()); // passing API key value as password
             connOpts.setCleanSession(true);
             connOpts.setKeepAliveInterval(KEEP_ALIVE_INTERVAL);
+            connOpts.setAutomaticReconnect(true);
 
             // Connection
             System.out.println("Connecting to broker: " + SERVER);
             mqttClient.connect(connOpts);
             System.out.println("Connected");
-
-            // Subscribe to commands
-            System.out.println("Awaiting for commands...");
-            mqttClient.subscribe("dev/cmd");
-            System.out.println("Subscribed");
 
             // sleep 10 seconds
             Thread.sleep(10000L);

@@ -20,11 +20,16 @@ import java.util.UUID;
  */
 public class Sample_12_SimpleAppConsumeLoRa {
 
+    // For all LoRa devices
+    final static String ROUTING_KEY_FILTER_ALL = "router/~event/v1/data/new/urn/lora/#";
+    // For a specific device (change with own DevEUI)
+    final static String ROUTING_KEY_FILTER_SPECIFIC = "router/~event/v1/data/new/urn/lora/0123456789ABCDEF/#";
+
     /**
      * Basic "MqttCallback" that handles messages as JSON device commands,
      * and immediately respond.
      */
-    public static class SimpleMqttCallback implements MqttCallback {
+    public static class SimpleMqttCallback implements MqttCallbackExtended {
 
         private MqttClient mqttClient;
         private Gson gson = new Gson();
@@ -35,7 +40,6 @@ public class Sample_12_SimpleAppConsumeLoRa {
 
         public void connectionLost(Throwable throwable) {
             System.out.println("Connection lost");
-            mqttClient.notifyAll();
         }
 
         public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
@@ -50,6 +54,22 @@ public class Sample_12_SimpleAppConsumeLoRa {
 
         public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
             // nothing
+        }
+
+        public void connectComplete(boolean b, String s) {
+            System.out.println("Connection is established");
+            try {
+                subscribeToRouter(mqttClient, ROUTING_KEY_FILTER_ALL);
+            } catch (MqttException e) {
+                System.out.println("Error during subscription");
+            }
+        }
+
+        private void subscribeToRouter(MqttClient mqttClient, String routingKey) throws MqttException {
+            // Subscribe to commands
+            System.out.printf("Consuming from Router with filter '%s'...%n", routingKey);
+            mqttClient.subscribe(routingKey);
+            System.out.println("... subscribed.");
         }
     }
 
@@ -73,21 +93,12 @@ public class Sample_12_SimpleAppConsumeLoRa {
             connOpts.setPassword(API_KEY.toCharArray()); // passing API key value as password
             connOpts.setCleanSession(true);
             connOpts.setKeepAliveInterval(KEEP_ALIVE_INTERVAL);
+            connOpts.setAutomaticReconnect(true);
 
             // Connection
             System.out.printf("Connecting to broker: %s ...%n", SERVER);
             mqttClient.connect(connOpts);
             System.out.println("... connected.");
-
-            // For all LoRa devices
-            final String ROUTING_KEY_FILTER = "router/~event/v1/data/new/urn/lora/#";
-            // For a specific device
-            // final String ROUTING_KEY_FILTER = "router/~event/v1/data/new/urn/lora/0123456789ABCDEF/#";
-
-            // Subscribe to commands
-            System.out.printf("Consuming from Router with filter '%s'...%n", ROUTING_KEY_FILTER);
-            mqttClient.subscribe(ROUTING_KEY_FILTER);
-            System.out.println("... subscribed.");
 
             synchronized (mqttClient) {
                 mqttClient.wait();
