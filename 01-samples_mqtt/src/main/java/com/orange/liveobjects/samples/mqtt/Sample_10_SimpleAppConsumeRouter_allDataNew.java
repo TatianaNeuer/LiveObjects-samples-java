@@ -20,8 +20,7 @@ public class Sample_10_SimpleAppConsumeRouter_allDataNew {
     // Subscribe to commands
     final static String ROUTING_KEY_FILTER = "~event/v1/data/new/#";
     /**
-     * Basic "MqttCallback" that handles messages as JSON device commands,
-     * and immediately respond.
+     * Basic "MqttCallback" that prints received messages
      */
     public static class SimpleMqttCallback implements MqttCallbackExtended {
         private MqttClient mqttClient;
@@ -52,7 +51,7 @@ public class Sample_10_SimpleAppConsumeRouter_allDataNew {
         }
 
         private void subscribeToRouter(MqttClient mqttClient, String routingKey) throws MqttException {
-            // Subscribe to commands
+            // Subscribe to new messages topic
             System.out.printf("Consuming from Router with filter '%s'...%n", routingKey);
             mqttClient.subscribe(routingKey);
             System.out.println("... subscribed.");

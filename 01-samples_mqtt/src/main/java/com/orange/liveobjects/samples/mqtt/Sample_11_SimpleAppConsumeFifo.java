@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Application connects to LO and consumes messages from a FIFO queue.
  *
- * You MUST first create a FIFO called "~data" in your LO account.
+ * You MUST first create a FIFO called "alarm" in your LO account.
  *
  */
 public class Sample_11_SimpleAppConsumeFifo {
@@ -23,8 +23,7 @@ public class Sample_11_SimpleAppConsumeFifo {
     final static String TOPIC_FIFO = "fifo/alarm";
 
     /**
-     * Basic "MqttCallback" that handles messages as JSON device commands,
-     * and immediately respond.
+     * Basic "MqttCallback" that prints received messages
      */
     public static class SimpleMqttCallback implements MqttCallbackExtended {
         private MqttClient mqttClient;
@@ -55,7 +54,7 @@ public class Sample_11_SimpleAppConsumeFifo {
         }
 
         private void subscribeToFifo(MqttClient mqttClient, String routingKey) throws MqttException {
-            // Subscribe to commands
+            // Subscribe to fifo
             System.out.printf("Consuming from Router with filter '%s'...%n", routingKey);
             mqttClient.subscribe(routingKey);
             System.out.println("... subscribed.");

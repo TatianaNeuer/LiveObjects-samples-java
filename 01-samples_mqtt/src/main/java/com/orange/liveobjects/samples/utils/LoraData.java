@@ -15,7 +15,7 @@ import java.util.List;
 public class LoraData {
 
     /**
-     * Stream identifier: urn:lora:<devEUI>!uplink
+     * Stream identifier: urn:lo:nsid:lora:<devEUI>
      */
     public String streamId;
 
@@ -44,6 +44,12 @@ public class LoraData {
      */
     public LoraMetadata metadata;
 
+    /**
+     * creation date (ISO8601 format)
+     */
+    public String created;
+
+
     @Override
     public String toString() {
         return "LoraData{" +
@@ -53,6 +59,7 @@ public class LoraData {
                 ", value=" + value +
                 ", tags=" + tags +
                 ", metadata=" + metadata +
+                ", created=" + created +
                 '}';
     }
 
@@ -62,22 +69,6 @@ public class LoraData {
     // *********************
 
     public class LoraDataValue {
-
-        /**
-         * Port of the device on which the command was sent
-         */
-        public Integer port;
-
-        /**
-         * Downlink frame counter of the command
-         */
-        public Integer fcnt;
-
-        /**
-         * Signal quality indicator from 1 to 5
-         */
-        public Integer signalLevel;
-
         /**
          * Hexadecimal raw data of the message
          */
@@ -86,26 +77,183 @@ public class LoraData {
         @Override
         public String toString() {
             return "LoraDataValue{" +
-                    "port=" + port +
+                    "payload=" + payload +
+                    '}';
+        }
+    }
+
+    public class Group {
+        /**
+         * Group unique identifier
+         */
+        public String id;
+
+        /**
+         * Complete group path
+         */
+        public String path;
+
+        @Override
+        public String toString() {
+            return "Group{" +
+                    "id=" + id +
+                    ", path=" + path +
+                    '}';
+        }
+    }
+
+    public class Location {
+
+        /**
+         * Latitude
+         */
+        public Double lat;
+
+        /**
+         * Longitude
+         */
+        public Double lon;
+
+        /**
+         * Altitude
+         */
+        public Double alt;
+
+        /**
+         * Measure accuracy
+         */
+        public Double accuracy;
+
+        /**
+         * Location provider
+         */
+        public String provider;
+
+        @Override
+        public String toString() {
+            return "Location{" +
+                    "lat=" + lat +
+                    ", lon=" + lon +
+                    ", alt=" + alt +
+                    ", accuracy=" + accuracy +
+                    ", provider=" + provider +
+                    '}';
+        }
+    }
+
+    public class LoraNetwork {
+
+        /**
+         * Device EUI
+         */
+        public String devEUI;
+
+        /**
+         * Port of the device on which the command was sent
+         */
+        public Integer port;
+
+        /**
+         * Uplink frame counter of the command
+         */
+        public Integer fcnt;
+
+        /**
+         * Received signal strength indication measured by the best gateway
+         */
+        public Double rssi;
+
+        /**
+         * Signal noise ratio measured by the best gateway
+         */
+        public Double snr;
+
+        /**
+         * Sreading factor used by the device
+         */
+        public Integer sf;
+
+        /**
+         * Signal quality indicator from 1 to 5
+         */
+        public Integer signalLevel;
+
+        /**
+         * Location of the device
+         */
+        public Location location;
+
+        /**
+         * Number of Lora gateways that have received the message
+         */
+        public Integer gatewayCnt;
+
+        @Override
+        public String toString() {
+            return "LoraNetwork{" +
+                    "devEUI=" + devEUI +
+                    ", port=" + port +
                     ", fcnt=" + fcnt +
+                    ", rssi=" + rssi +
+                    ", snr=" + snr +
+                    ", sf=" + sf +
                     ", signalLevel=" + signalLevel +
-                    ", payload='" + payload + '\'' +
+                    ", location=" + location +
+                    ", gatewayCnt=" + gatewayCnt +
                     '}';
         }
 
     }
 
+    public class Network {
+        /**
+         * Information from lora network
+         */
+        public LoraNetwork lora;
+
+        @Override
+        public String toString() {
+            return "Network{" +
+                    "lora='" + lora + '\'' +
+                    '}';
+        }
+    }
+
     public class LoraMetadata {
 
         /**
-         * Source of the payload: urn:lora:<devEUI>
+         * Source of the payload: urn:lo:nsid:lora:<devEUI>
          */
         public String source;
+
+        /**
+         * Group to which the device belongs
+         */
+        public Group group;
+
+        /**
+         * Encoding type of the binary payload sent by the device
+         */
+        public String encoding;
+
+        /**
+         * Entry point of the payload: lora
+         */
+        public String connector;
+
+        /**
+         * Information from network
+         */
+        public Network network;
 
         @Override
         public String toString() {
             return "LoraMetadata{" +
                     "source='" + source + '\'' +
+                    ", group='" + group + '\'' +
+                    ", encoding='" + encoding + '\'' +
+                    ", connector='" + connector + '\'' +
+                    ", network='" + network + '\'' +
                     '}';
         }
 
