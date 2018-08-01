@@ -17,7 +17,7 @@ import java.util.UUID;
  */
 public class Sample_10_SimpleAppConsumeRouter_allDataNew {
 
-    // Subscribe to commands
+    // Subscribe to messages
     final static String ROUTING_KEY_FILTER = "~event/v1/data/new/#";
     /**
      * Basic "MqttCallback" that prints received messages

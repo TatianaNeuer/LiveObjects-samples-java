@@ -154,7 +154,7 @@ public class LoraData {
         public Integer port;
 
         /**
-         * Uplink frame counter of the command
+         * Uplink frame counter of the message
          */
         public Integer fcnt;
 
@@ -169,7 +169,7 @@ public class LoraData {
         public Double snr;
 
         /**
-         * Sreading factor used by the device
+         * Spreading factor used by the device
          */
         public Integer sf;
 
