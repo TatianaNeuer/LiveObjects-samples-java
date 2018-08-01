@@ -20,10 +20,15 @@ import java.util.UUID;
  */
 public class Sample_12_SimpleAppConsumeLoRa {
 
-    // For all LoRa devices
-    final static String ROUTING_KEY_FILTER_ALL = "router/~event/v1/data/new/typ/+/dev/+/con/lora/evt/+/grp/#";
+    // For all LoRa devices (deprecated and will be decommissioned in december 2018)
+    final static String ROUTING_KEY_FILTER_ALL = "router/~event/v1/data/new/urn/lora/#";
     // For a specific device (change with own DevEUI)
-    final static String ROUTING_KEY_FILTER_SPECIFIC = "router/~event/v1/data/new/typ/+/dev/urn:lo:nsid:lora:0123456789ABCDEF/con/lora/evt/+/grp/#";
+    final static String ROUTING_KEY_FILTER_SPECIFIC = "router/~event/v1/data/new/urn/lora/0123456789ABCDEF/#";
+
+    // For all LoRa devices (deprecated and will be decommissioned in december 2018)
+    final static String NEW_ROUTING_KEY_FILTER_ALL = "router/~event/v1/data/new/typ/+/dev/+/con/lora/evt/+/grp/#";
+    // For a specific device (change with own DevEUI)
+    final static String NEW_ROUTING_KEY_FILTER_SPECIFIC = "router/~event/v1/data/new/typ/+/dev/urn:lo:nsid:lora:0123456789ABCDEF/con/lora/evt/+/grp/#";
 
     /**
      * Basic "MqttCallback" that handles messages as JSON Lora messages,
